@@ -21,7 +21,7 @@
         <hr>
         <!--表格-->
         <template>
-            <el-table>
+            <el-table height="700" border :data="tableData">
                 <el-table-column
                         prop="date"
                         label="日期"
@@ -37,6 +37,14 @@
                         label="地址">
                 </el-table-column>
             </el-table>
+            <el-pagination class="block"
+                           background
+                           layout="prev, pager, next"
+                           :current-page.sync='search.pageNum'
+                           :page-size='search.pageSize'
+                           @current-change='onSubmit'
+                           :total="search.total">
+            </el-pagination>
         </template>
     </div>
 </template>
@@ -49,19 +57,34 @@
                 search: {
                     name: '',
                     username: '',
-                    sex: ''
+                    sex: '',
+                    pageNum: 1,
+                    total: 0,
+                    pageSize: 5
                 },
-                tableData: null
+                tableData: null,
+
             }
         },
         methods: {
-            onSubmit() {
-                console.log(this.search)
+            onSubmit(pageNum) {
+                console.log(pageNum)
+                this.$axios.post('/user/list', this.search).then((res) => {
+                    this.tableData = res.data.data.list
+                    this.search.pageNum = res.data.data.pageNum;
+                    this.search.total = res.data.data.total;
+                    this.search.pageSize = res.data.data.pageSize;
+                })
             }
         }
     }
 </script>
 
 <style scoped>
-
+    .block {
+        float: right;
+    }
+    .has-gutter{
+        text-align: center;
+    }
 </style>
