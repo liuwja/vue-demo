@@ -38,7 +38,7 @@
             handleClick(scope) {
                 this.$router.push({path: '/userDetail', query: {id: scope.row.id}})
             }
-        },
+        }
     }
 </script>
 

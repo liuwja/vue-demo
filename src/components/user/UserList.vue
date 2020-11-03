@@ -2,11 +2,17 @@
     <div id="userList">
         <!--查询条件-->
         <el-form :inline="true" class="demo-form-inline" v-model="search">
+            <el-form-item label="ID">
+                <el-input type="text" placeholder="ID" v-model="search.id"></el-input>
+            </el-form-item>
             <el-form-item label="姓名">
                 <el-input type="text" placeholder="姓名" v-model="search.name"></el-input>
             </el-form-item>
             <el-form-item label="账号">
                 <el-input placeholder="账号" v-model="search.username"></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱">
+                <el-input placeholder="邮箱" v-model="search.email"></el-input>
             </el-form-item>
             <el-form-item label="性别">
                 <el-select placeholder="性别" v-model="search.sex">
@@ -23,8 +29,13 @@
         <template>
             <el-table height="700" border :data="tableData">
                 <el-table-column
-                        prop="date"
-                        label="日期"
+                        prop="id"
+                        label="ID"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="createdate"
+                        label="创建日期"
                         width="180">
                 </el-table-column>
                 <el-table-column
@@ -33,8 +44,29 @@
                         width="180">
                 </el-table-column>
                 <el-table-column
+                        prop="username"
+                        label="账号"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="email"
+                        label="邮箱"
+                        width="180">
+                </el-table-column>
+                <el-table-column
                         prop="address"
                         label="地址">
+                </el-table-column>
+                <el-table-column
+                        prop="sex"
+                        label="性别">
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button @click="dialogFormVisible = true" type="text" size="small">查看</el-button>
+                        <el-button type="text" size="small">编辑</el-button>
+                    </template>
+
                 </el-table-column>
             </el-table>
             <el-pagination class="block"
@@ -46,35 +78,52 @@
                            :total="search.total">
             </el-pagination>
         </template>
+        <user-detail :user="'user-detail'" :dialogFormVisible="dialogFormVisible"></user-detail>
     </div>
+
 </template>
 
 <script>
+    import userDetail from './UserDetail'
+
     export default {
+        components: {userDetail},
         name: "user-list",
         data() {
             return {
                 search: {
+                    id: '',
                     name: '',
                     username: '',
+                    email: '',
                     sex: '',
                     pageNum: 1,
                     total: 0,
                     pageSize: 5
                 },
                 tableData: null,
-
+                'user-detail': {
+                    id: '',
+                    name: '',
+                    username: '',
+                    email: '',
+                    sex: '',
+                    createdate: '',
+                    address: ''
+                }, dialogFormVisible: false
             }
         },
         methods: {
             onSubmit(pageNum) {
-                console.log(pageNum)
                 this.$axios.post('/user/list', this.search).then((res) => {
                     this.tableData = res.data.data.list
                     this.search.pageNum = res.data.data.pageNum;
                     this.search.total = res.data.data.total;
                     this.search.pageSize = res.data.data.pageSize;
                 })
+            },
+            userDetail(row) {
+                console.log(row)
             }
         }
     }
@@ -84,7 +133,8 @@
     .block {
         float: right;
     }
-    .has-gutter{
+
+    .has-gutter {
         text-align: center;
     }
 </style>
