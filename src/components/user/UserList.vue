@@ -63,7 +63,7 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="dialogFormVisible = true" type="text" size="small">查看</el-button>
+                        <el-button @click="userDetail(scope.row)" type="text" size="small">查看</el-button>
                         <el-button type="text" size="small">编辑</el-button>
                     </template>
 
@@ -78,7 +78,8 @@
                            :total="search.total">
             </el-pagination>
         </template>
-        <user-detail :user="'user-detail'" :dialogFormVisible="dialogFormVisible"></user-detail>
+        <user-detail :user="user" :dialogFormVisible="dialogFormVisible"
+                     @closeUserDetail="closeUserDetail"></user-detail>
     </div>
 
 </template>
@@ -102,7 +103,7 @@
                     pageSize: 5
                 },
                 tableData: null,
-                'user-detail': {
+                user: {
                     id: '',
                     name: '',
                     username: '',
@@ -123,7 +124,12 @@
                 })
             },
             userDetail(row) {
-                console.log(row)
+                this.user = row
+                this.dialogFormVisible = true
+            },
+            closeUserDetail() {
+                this.dialogFormVisible = false
+
             }
         }
     }
