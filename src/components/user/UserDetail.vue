@@ -1,6 +1,7 @@
 <template>
     <div class="userDetail">
-        <el-dialog title="用户详情" :visible.sync="dialogFormVisible" :before-close="close">
+        <el-dialog title="用户详情" :visible.sync="dialogFormVisible" :before-close="close"
+                   :close-on-click-modal='closeOnClickModal' @open="open">
             <el-form v-model="user" label-width="80px">
                 <el-form-item label="ID">
                     <el-input v-model="user.id" autocomplete="off" readonly></el-input>
@@ -39,22 +40,51 @@
     export default {
         name: "userDetail",
         props: {
-            user:{},
+            userId: null,
             dialogFormVisible: false
+        },
+        data() {
+            return {
+                closeOnClickModal: false,
+                user: {}
+            }
         },
         methods: {
             close() {
                 this.$confirm('确认关闭？').then(() => {
                     this.$emit('closeUserDetail')
                 }).catch(() => {
-                    console.log(this.user)
                 })
 
             },
             save() {
+                this.$axios.put('/user', this.user).then((res) => {
+                    if (res.data.data === 1) {
+                        this.$message({
+                            type: 'success',
+                            message: '保存成功'
+                        })
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: '保存失败'
+                        })
+                    }
+                    this.$emit('closeUserDetail')
+                }).catch(() => {
 
+                })
+
+            },
+            open() {
+                this.$axios.get('/user/' + this.userId).then((res) => {
+                    this.user = res.data.data
+                }).catch(() => {
+
+                })
             }
         }
+
     }
 </script>
 

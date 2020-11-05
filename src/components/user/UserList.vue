@@ -63,8 +63,8 @@
                 </el-table-column>
                 <el-table-column label="操作">
                     <template slot-scope="scope">
-                        <el-button @click="userDetail(scope.row)" type="text" size="small">查看</el-button>
-                        <el-button type="text" size="small">编辑</el-button>
+                        <el-button @click="userDetail(scope.row)" type="text" size="small">编辑</el-button>
+                        <el-button type="text" size="small" @click="deleteUser(scope.row.id)">删除</el-button>
                     </template>
 
                 </el-table-column>
@@ -78,7 +78,7 @@
                            :total="search.total">
             </el-pagination>
         </template>
-        <user-detail :user="user" :dialogFormVisible="dialogFormVisible"
+        <user-detail :userId="userId" :dialogFormVisible="dialogFormVisible"
                      @closeUserDetail="closeUserDetail"></user-detail>
     </div>
 
@@ -111,11 +111,13 @@
                     sex: '',
                     createdate: '',
                     address: ''
-                }, dialogFormVisible: false
+                },
+                dialogFormVisible: false,
+                userId: null
             }
         },
         methods: {
-            onSubmit(pageNum) {
+            onSubmit() {
                 this.$axios.post('/user/list', this.search).then((res) => {
                     this.tableData = res.data.data.list
                     this.search.pageNum = res.data.data.pageNum;
@@ -124,12 +126,33 @@
                 })
             },
             userDetail(row) {
-                this.user = row
+                this.userId = row.id
                 this.dialogFormVisible = true
             },
             closeUserDetail() {
                 this.dialogFormVisible = false
+                this.onSubmit()
+            },
+            deleteUser(id) {
+                this.$confirm('确认删除').then(() => {
+                    this.$axios.delete("/user/" + id).then((res) => {
+                        if (res.data.data === 1) {
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功'
+                            })
+                        } else {
+                            this.$message({
+                                type: 'error',
+                                message: '删除失败'
+                            })
+                        }
+                    }).catch(() => {
 
+                    })
+                    this.onSubmit()
+                }).catch(() => {
+                })
             }
         }
     }
