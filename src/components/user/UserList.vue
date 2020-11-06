@@ -113,10 +113,11 @@
                     address: ''
                 },
                 dialogFormVisible: false,
-                userId: null
+                userId: null,
             }
         },
         methods: {
+
             onSubmit() {
                 this.$axios.post('/user/list', this.search).then((res) => {
                     this.tableData = res.data.data.list
@@ -163,7 +164,7 @@
         float: right;
     }
 
-    .has-gutter {
-        text-align: center;
+    body {
+        margin: 0;
     }
 </style>
