@@ -9,7 +9,7 @@
                 <el-input type="text" placeholder="姓名" v-model="search.name"></el-input>
             </el-form-item>
             <el-form-item label="账号">
-                <el-input placeholder="账号" v-model="search.username"></el-input>
+                <el-input placeholder="账号" v-model="search.userName"></el-input>
             </el-form-item>
             <el-form-item label="邮箱">
                 <el-input placeholder="邮箱" v-model="search.email"></el-input>
@@ -25,6 +25,10 @@
             </el-form-item>
         </el-form>
         <hr>
+        <el-row>
+            <el-button type="primary" @click="addUser">新增用户</el-button>
+        </el-row>
+        <hr>
         <!--表格-->
         <template>
             <el-table height="700" border :data="tableData">
@@ -34,7 +38,7 @@
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="createdate"
+                        prop="createDate"
                         label="创建日期"
                         width="180">
                 </el-table-column>
@@ -44,7 +48,7 @@
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="username"
+                        prop="userName"
                         label="账号"
                         width="180">
                 </el-table-column>
@@ -78,42 +82,45 @@
                            :total="search.total">
             </el-pagination>
         </template>
-        <user-detail :userId="userId" :dialogFormVisible="dialogFormVisible"
+        <user-detail :userId="userId" :dialogFormVisible="userDetailFormVisible"
                      @closeUserDetail="closeUserDetail"></user-detail>
+        <add-user :dialogFormVisible="addUserFormVisible" @closeAddUser="closeAddUser"></add-user>
     </div>
 
 </template>
 
 <script>
     import userDetail from './UserDetail'
+    import addUser from './AddUser'
 
     export default {
-        components: {userDetail},
+        components: {userDetail, addUser},
         name: "user-list",
         data() {
             return {
                 search: {
-                    id: '',
-                    name: '',
-                    username: '',
-                    email: '',
-                    sex: '',
+                    id: null,
+                    name: null,
+                    userName: null,
+                    email: null,
+                    sex: null,
                     pageNum: 1,
                     total: 0,
                     pageSize: 5
                 },
                 tableData: null,
                 user: {
-                    id: '',
-                    name: '',
-                    username: '',
-                    email: '',
-                    sex: '',
-                    createdate: '',
-                    address: ''
+                    id: null,
+                    name: null,
+                    userName: null,
+                    email: null,
+                    sex: null,
+                    createDate: null,
+                    address: null
                 },
-                dialogFormVisible: false,
+                userDetailFormVisible: false,
                 userId: null,
+                addUserFormVisible: false
             }
         },
         methods: {
@@ -121,6 +128,7 @@
             onSubmit() {
                 this.$axios.post('/user/list', this.search).then((res) => {
                     this.tableData = res.data.data.list
+                    console.log(this.tableData)
                     this.search.pageNum = res.data.data.pageNum;
                     this.search.total = res.data.data.total;
                     this.search.pageSize = res.data.data.pageSize;
@@ -128,16 +136,16 @@
             },
             userDetail(row) {
                 this.userId = row.id
-                this.dialogFormVisible = true
+                this.userDetailFormVisible = true
             },
             closeUserDetail() {
-                this.dialogFormVisible = false
+                this.userDetailFormVisible = false
                 this.onSubmit()
             },
             deleteUser(id) {
                 this.$confirm('确认删除').then(() => {
-                    this.$axios.delete("/user/" + id).then((res) => {
-                        if (res.data.data === 1) {
+                    this.$axios.delete('/user/' + id).then((res) => {
+                        if (res.data.data === true) {
                             this.$message({
                                 type: 'success',
                                 message: '删除成功'
@@ -154,6 +162,13 @@
                     this.onSubmit()
                 }).catch(() => {
                 })
+            },
+            addUser() {
+                this.addUserFormVisible = true
+            },
+            closeAddUser() {
+                this.addUserFormVisible = false
+                this.onSubmit()
             }
         }
     }

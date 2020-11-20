@@ -1,7 +1,7 @@
 <template>
     <div class="userDetail">
         <el-dialog title="用户详情" :visible.sync="dialogFormVisible" :before-close="close"
-                   :close-on-click-modal='closeOnClickModal' @open="open">
+                   :close-on-click-modal='closeOnClickModal'>
             <el-form v-model="user" label-width="80px">
                 <el-form-item label="ID">
                     <el-input v-model="user.id" autocomplete="off" readonly></el-input>
@@ -64,7 +64,7 @@
         methods: {
             close() {
                 this.$confirm('确认关闭？').then(() => {
-                    this.$emit('closeUserDetail')
+                    this.$emit('closeAddUser')
                 }).catch(() => {
                 })
 
@@ -82,21 +82,11 @@
                             message: '保存失败'
                         })
                     }
-                    this.$emit('closeUserDetail')
+                    this.$emit('closeAddUser')
                 }).catch(() => {
 
                 })
 
-            },
-            open() {
-                if (this.userId == null) {
-                    return
-                }
-                this.$axios.get('/user/' + this.userId).then((res) => {
-                    this.user = res.data.data
-                }).catch(() => {
-
-                })
             }
         }
 

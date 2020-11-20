@@ -8,8 +8,8 @@
                     ref="user"
                     label-width="80px"
                     class="demo-user">
-                <el-form-item label="用户名" prop="username">
-                    <el-input type="text" maxlength="12" v-model="user.username"></el-input>
+                <el-form-item label="用户名" prop="userName">
+                    <el-input type="text" maxlength="12" v-model="user.userName"></el-input>
                 </el-form-item>
                 <el-form-item label="密 码" prop="password">
                     <el-input type="password" v-model="user.password" autocomplete="off"></el-input>
@@ -36,12 +36,12 @@
             }
             return {
                 user: {
-                    username: '',
+                    userName: '',
                     password: ''
                 },
                 rules: {
                     password: [{validator: validatePass, trigger: 'blur'}],
-                    username: [{required: true, message: '请输入用户名', trigger: 'blur'}, {
+                    userName: [{required: true, message: '请输入用户名', trigger: 'blur'}, {
                         min: 3,
                         max: 12,
                         message: '长度在3到12',
